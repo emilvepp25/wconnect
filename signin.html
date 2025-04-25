@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Sign In - WeConnect</title>
+  <link rel="stylesheet" href="css/global.css">
+  <!-- Firebase v8 SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <style>
+    /* Page-specific styles for signin.html */
+    /* Add any unique styles for signin.html here */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <!-- Assuming logo path is relative to the auth folder -->
+      <img src="../assets/images/logo/wconnect.png" alt="WeConnect Logo">
+    </div>
+    <h1>Welcome Back!</h1>
+    <p class="subtitle">Sign in to continue your journey with WeConnect.</p>
+    <form id="signinForm">
+      <div class="input-container">
+        <input type="email" id="email" placeholder="Email Address" required>
+      </div>
+      <div class="input-container">
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <div class="links">
+        <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+        <p style="margin-top: 10px;">
+          Don't have an account? <a href="signup.html">Sign Up</a>
+        </p>
+    </div>
+  </div>
+
+  <!-- Install Modal (Identical to signup.html) -->
+  <div id="installModal" class="install-modal hidden">
+    <div class="install-banner" onclick="simulateInstall()">
+      <!-- Assuming install banner path -->
+      <img src="/assets/images/logo/install.png" alt="Install Banner">
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // Page-specific JavaScript for signin.html
+    // Sign-In Form Handler
+    document.getElementById('signinForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showLoadingIndicator(); // Show loader when submission starts
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        // Sign in user with email and password
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Optional: Update last login time in Firestore (Example)
+        // await db.collection('users').doc(user.uid).update({
+        //   lastLogin: serverTimestamp()
+        // });
+
+        alert('Sign In Successful!');
+        // Redirect to the home page or dashboard
+        window.location.href = 'home.html'; // Adjust redirect location if needed
+
+      } catch (error) {
+        console.error("Sign in error:", error);
+        // Provide more user-friendly error messages
+        let errorMessage = "An unknown error occurred. Please try again.";
+        switch (error.code) {
+            case 'auth/user-not-found':
+                errorMessage = "No account found with this email address.";
+                break;
+            case 'auth/wrong-password':
+                errorMessage = "Incorrect password. Please try again.";
+                break;
+            case 'auth/invalid-email':
+                errorMessage = "Please enter a valid email address.";
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.";
+                break;
+             case 'auth/network-request-failed':
+                errorMessage = "Network error. Please check your internet connection and try again.";
+                break;
+            // Add other Firebase Auth error codes as needed
+        }
+        alert(`Sign In Failed: ${errorMessage}`);
+        hideLoadingIndicator(); // Hide loader on error
+      }
+      // No need to hide loader here if redirect happens on success
+    });
+
+    // Optional: Check if user is already signed in on page load
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // User is signed in, perhaps redirect them directly to home
+            console.log("User already signed in:", user.uid);
+            // Uncomment the line below to redirect automatically if logged in
+            // window.location.href = 'home.html';
+        } else {
+            // User is signed out
+            console.log("User is signed out.");
+        }
+    });
+
+  </script>
+  <script src="js/global.js"></script>
+</body>
+</html>
