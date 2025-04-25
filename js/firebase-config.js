@@ -4,7 +4,7 @@ al// js/firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; // Using version from previous steps
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 // If you plan to use other Firebase services (like Database, Storage, Firestore), import them here:
-// import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 // import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -26,12 +26,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // Initialize other Firebase services if you imported them:
-// const database = getDatabase(app);
+const database = getDatabase(app);
 // const firestore = getFirestore(app);
 // const storage = getStorage(app);
 
 // Export the initialized services so they can be imported in other scripts (like index.html, signin.html, etc.)
-export { app, auth };
+export { app, auth, database };
 
 // If using other services, export them as well:
 // export { app, auth, database, firestore, storage };
